@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1ff">
+  <title>Closet Chaos — Silly Style Studio</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Closet Chaos home"><span class="brand-icon">✦</span><span>closet<span class="brand-pop">chaos</span></span></a>
+      <div class="top-note"><span class="live-dot"></span> SILLY STYLE STUDIO</div>
+      <button class="icon-button sound-toggle" aria-label="Toggle sound" title="Toggle sound">♫</button>
+    </header>
+
+    <section class="game-layout" aria-label="Dress-up game">
+      <section class="stage-card">
+        <div class="stage-topline"><div><span class="eyebrow">YOUR STYLE, YOUR RULES</span><h1>Meet <span id="characterName">Riley</span> <span class="sparkle">✦</span></h1></div><button id="randomize" class="round-button" title="Surprise me" aria-label="Random outfit">⤨</button></div>
+        <div class="stage" id="stage">
+          <div class="stage-rays"></div><div class="stage-floor"></div>
+          <div class="speech-bubble" id="speech">Ready for a wardrobe remix?</div>
+          <div class="character-wrap" id="characterWrap">
+            <svg id="avatar" viewBox="0 0 360 520" role="img" aria-label="A smiling cartoon adult ready to dress up">
+              <defs>
+                <filter id="softShadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#563b79" flood-opacity=".15"/></filter>
+              </defs>
+              <g id="person" filter="url(#softShadow)">
+                <!-- legs and shoes -->
+                <path d="M139 326 C135 366 138 420 133 461 L131 476 Q145 487 171 478 L177 463 177 353 181 326Z" fill="#d99a72"/>
+                <path d="M183 326 L185 365 187 457 Q187 472 197 479 Q214 485 235 476 L234 461 Q221 454 218 444 L217 326Z" fill="#d99a72"/>
+                <g id="bottomGarment"></g>
+                <g id="shoes"><path d="M132 458 Q143 466 177 457 L181 474 Q180 490 157 493 L119 491 Q113 483 123 475Z" fill="#ff704d"/><path d="M188 457 Q207 463 233 456 L243 475 Q247 489 226 493 L190 490 Q181 483 188 457Z" fill="#ff704d"/><path d="M121 484 Q144 489 176 482M191 482Q217 490 240 482" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></g>
+                <!-- arms -->
+                <path d="M125 162 Q105 169 99 199 L79 273 Q73 291 87 298 Q100 302 108 285 L137 224Z" fill="#d99a72"/>
+                <path d="M228 162 Q249 169 255 198 L279 266 Q287 284 275 294 Q261 302 251 284 L217 220Z" fill="#d99a72"/>
+                <circle cx="86" cy="291" r="13" fill="#d99a72"/><circle cx="275" cy="287" r="13" fill="#d99a72"/>
+                <!-- torso -->
+                <path d="M133 143 Q151 130 180 131 Q210 130 229 144 L240 220 225 335 Q181 351 137 335 L122 219Z" fill="#d99a72"/>
+                <!-- base underwear top -->
+                <path id="baseTop" d="M136 167 Q158 179 180 171 Q203 179 225 167 L231 211 Q209 224 181 208 Q151 224 130 211Z" fill="#71c7bc" stroke="#fff" stroke-width="3"/>
+                <path d="M143 166 Q141 147 154 146 Q164 146 166 171 M196 171 Q198 146 209 146 Q222 148 219 169" fill="none" stroke="#71c7bc" stroke-width="9" stroke-linecap="round"/>
+                <g id="topGarment"></g>
+                <!-- neck and head -->
+                <path d="M161 118 L161 145 Q180 157 199 144 L199 118Z" fill="#d99a72"/>
+                <ellipse cx="180" cy="84" rx="54" ry="62" fill="#e6ad82"/>
+                <path id="hairBack" d="M127 91 Q113 31 160 19 Q215 3 236 53 Q244 73 233 104 L224 69 Q202 63 187 44 Q170 65 139 71Z" fill="#463455"/>
+                <ellipse cx="180" cy="85" rx="49" ry="55" fill="#e6ad82"/>
+                <path id="hairFront" d="M133 76 Q132 31 171 25 Q203 20 224 43 Q234 57 230 82 Q209 71 195 52 Q176 72 146 74 L139 100Z" fill="#463455"/>
+                <path d="M153 89 Q162 83 169 89 M192 89 Q200 83 208 89" fill="none" stroke="#583d38" stroke-width="4" stroke-linecap="round"/>
+                <ellipse cx="162" cy="96" rx="3" ry="4" fill="#342d40"/><ellipse cx="200" cy="96" rx="3" ry="4" fill="#342d40"/>
+                <path d="M171 111 Q180 120 190 110" fill="none" stroke="#a95356" stroke-width="3" stroke-linecap="round"/>
+                <ellipse cx="147" cy="105" rx="9" ry="5" fill="#ef8d83" opacity=".55"/><ellipse cx="213" cy="105" rx="9" ry="5" fill="#ef8d83" opacity=".55"/>
+                <g id="accessory"></g>
+              </g>
+              <g id="sparkles" opacity="0"><path d="M77 143l5 13 13 5-13 5-5 13-5-13-13-5 13-5zM278 105l4 10 10 4-10 4-4 10-4-10-10-4 10-4z" fill="#ffcf5a"/></g>
+            </svg>
+          </div>
+          <div class="style-stamp"><span id="stampEmoji">🪩</span><span id="stampText">STYLE ICON</span></div>
+          <div class="stage-caption"><span class="caption-dot"></span> Riley is a grown-up (25) & ready to play</div>
+        </div>
+        <div class="action-area">
+          <div class="action-copy"><strong>Ready for a silly tug?</strong><span>Pick a pull, then tap to make Riley bounce!</span></div>
+          <div class="pull-control"><label for="pullRange">PULL</label><input id="pullRange" type="range" min="1" max="5" value="3" aria-label="Silly tug strength"><span id="pullValue">3</span></div>
+          <button id="wedgieButton" class="wedgie-button"><span class="button-icon">↟</span><span>GIVE A SILLY WEDGIE</span><span class="button-arrow">→</span></button>
+        </div>
+        <div class="score-row"><div class="score-label"><span class="score-star">★</span><span>STYLE POINTS</span></div><div class="score-track"><div id="scoreBar" class="score-fill"></div></div><strong id="score">000</strong><span id="combo" class="combo">LET'S GO!</span></div>
+      </section>
+
+      <aside class="wardrobe-card">
+        <div class="wardrobe-heading"><div><span class="eyebrow">THE LOOK LAB</span><h2>Dress it up</h2></div><span class="hanger">♧</span></div>
+        <div class="tabs" role="tablist" aria-label="Wardrobe categories"><button class="tab active" role="tab" aria-selected="true" data-tab="tops">Tops</button><button class="tab" role="tab" aria-selected="false" data-tab="bottoms">Bottoms</button><button class="tab" role="tab" aria-selected="false" data-tab="extras">Extras</button></div>
+        <div class="options-panel" id="optionsPanel" role="tabpanel"></div>
+        <div class="color-section"><div class="section-title"><span>COLOR POP</span><span class="selected-color" id="selectedColorName">Berry</span></div><div class="swatches" id="swatches" role="group" aria-label="Choose garment color"></div></div>
+        <div class="name-row"><label for="nameInput">NAME YOUR STYLE STAR</label><input id="nameInput" maxlength="12" value="Riley" autocomplete="off" aria-label="Character name"></div>
+        <button id="resetButton" class="reset-button">↻ &nbsp; Reset outfit</button>
+        <div class="footer-note"><span>♥</span> Grown-up dress-up + goofy physics. Just for fun!</div>
+      </aside>
+    </section>
+    <div class="toast" id="toast" aria-live="polite"></div>
+    <footer class="page-footer">CLOSET CHAOS <span>•</span> STYLE IT. TUG IT. LAUGH.</footer>
+  </main>
+  <script src="game.js"></script>
+</body>
+</html>
