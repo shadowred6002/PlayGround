@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#bfe9ff">
+  <meta name="description" content="Wedgie Studio 3D — dress Riley in a full 3D wardrobe, then pick from eight slapstick wedgie scenarios.">
+  <title>Wedgie Studio 3D — Dress Up &amp; Wedgie Lab</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="viewport"><canvas id="scene" aria-label="3D view of Riley on a pastel stage"></canvas></div>
+
+  <header class="topbar">
+    <a class="brand" href="../index.html" title="Back to Closet Chaos">
+      <span class="brand-mark">🩲</span>
+      <span class="brand-text"><strong>Wedgie Studio</strong><small>3D</small></span>
+    </a>
+
+    <button id="counterPill" class="counter-pill" title="Total wedgies given">
+      <span class="counter-num" id="wedgieCount">0</span>
+      <span class="counter-meta"><span>wedgies given</span><b id="rankChip">Rookie</b></span>
+    </button>
+
+    <div class="top-actions">
+      <button id="trophies" class="icon-btn trophies" title="Trophy shelf" aria-label="Trophy shelf">
+        <span aria-hidden="true">🏆</span><span class="count">0</span>
+      </button>
+      <button id="btnHelp" class="icon-btn" title="How to play" aria-label="How to play">?</button>
+      <button id="btnSound" class="icon-btn" title="Toggle sound" aria-label="Toggle sound">🔊</button>
+    </div>
+  </header>
+
+  <aside id="wardrobe" class="panel wardrobe-panel" aria-label="Wardrobe">
+    <div class="panel-head">
+      <div><span class="eyebrow">THE LOOK LAB</span><h2>Dress Riley</h2></div>
+      <button id="wardrobeClose" class="panel-close" aria-label="Close wardrobe">✕</button>
+    </div>
+    <div id="wardrobeBody" class="wardrobe-body"></div>
+    <p class="panel-foot">Tap an item, then tint it with a colour swatch.</p>
+  </aside>
+
+  <aside class="panel wedgie-panel" aria-label="Wedgie scenarios">
+    <div class="panel-head">
+      <div><span class="eyebrow">THE TROUBLE LAB</span><h2>Pick a wedgie</h2></div>
+      <span class="panel-tag">8 ways</span>
+    </div>
+    <div id="wedgieButtons" class="wedgie-grid"></div>
+    <p class="panel-foot">Spicy? Switch mid-wedgie. Riley is a grown-up (25).</p>
+  </aside>
+
+  <div class="stage-hint">drag to orbit · scroll to zoom · keys 1–8</div>
+  <div id="bubble" class="bubble" role="status" aria-live="polite"></div>
+
+  <nav id="actionDock" class="dock" aria-label="Quick actions">
+    <button id="btnRelease" class="dock-btn release" title="Let go (R)">✋ <span>Let go</span></button>
+    <button id="btnRandom" class="dock-btn" title="Random outfit">🎲 <span>Random</span></button>
+    <button id="btnStrip" class="dock-btn" title="Strip to undies">🩲 <span>Strip</span></button>
+    <button id="btnWardrobe" class="dock-btn" title="Toggle wardrobe (W)">🧥 <span>Wardrobe</span></button>
+  </nav>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <div id="trophyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="trophyTitle">
+    <div class="modal-card">
+      <button class="modal-close" aria-label="Close trophy shelf">✕</button>
+      <span class="eyebrow">BRAGGING RIGHTS</span>
+      <h2 id="trophyTitle">Trophy shelf</h2>
+      <p class="modal-sub">Every wedgie is a learning experience. Mostly for Riley.</p>
+      <div class="trophy-list"></div>
+    </div>
+  </div>
+
+  <div id="helpModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="modal-card help-card">
+      <button id="helpClose" class="modal-close" aria-label="Close help">✕</button>
+      <span class="eyebrow">WELCOME TO THE STUDIO</span>
+      <h2 id="helpTitle">Meet Riley 👋</h2>
+      <p class="modal-sub">A grown-up cartoon character with a suspiciously stretchy waistband.</p>
+      <div class="help-grid">
+        <div class="help-item"><span>🧥</span><div><b>1. Dress up</b><p>Open the wardrobe and mix hair, tops, bottoms, undies, shoes and extras.</p></div></div>
+        <div class="help-item"><span>🩲</span><div><b>2. Pick a wedgie</b><p>Eight scenarios, from the classic yank to the legendary atomic.</p></div></div>
+        <div class="help-item"><span>✋</span><div><b>3. Let go</b><p>Tap <em>Let go</em> to end a scene. Or don't. Riley has nowhere to be.</p></div></div>
+        <div class="help-item"><span>🖱️</span><div><b>4. Look around</b><p>Drag to orbit, scroll to zoom. Keys 1–8 fire wedgies, R releases.</p></div></div>
+      </div>
+      <button id="helpStart" class="modal-cta">Let's get ridiculous →</button>
+    </div>
+  </div>
+
+  <div id="loading" class="loading">
+    <div class="loading-card">
+      <div class="loading-mark">🩲</div>
+      <h1>Wedgie Studio 3D</h1>
+      <p id="loadingText">Stretching the fabric…</p>
+      <div class="loading-bar"><span></span></div>
+    </div>
+  </div>
+
+  <script src="vendor/three.min.js"></script>
+  <script src="vendor/OrbitControls.js"></script>
+  <script src="js/util.js"></script>
+  <script src="js/sfx.js"></script>
+  <script src="js/character.js"></script>
+  <script src="js/band.js"></script>
+  <script src="js/props.js"></script>
+  <script src="js/wedgies.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
