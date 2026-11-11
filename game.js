@@ -4,7 +4,7 @@ const catalog={
  bottoms:[{id:'jeans',name:'Cool jeans',icon:'👖'},{id:'shorts',name:'Bouncy shorts',icon:'🩳'},{id:'skirt',name:'Swishy skirt',icon:'👗'},{id:'briefs',name:'Comfy briefs',icon:'🩲'},{id:'joggers',name:'Joggers',icon:'🧶'}],
  extras:[{id:'glasses',name:'Star shades',icon:'🕶️'},{id:'cap',name:'Cool cap',icon:'🧢'},{id:'bow',name:'Hair bow',icon:'🎀'},{id:'scarf',name:'Party scarf',icon:'🧣'},{id:'sneakers',name:'Fresh kicks',icon:'👟'},{id:'none',name:'No extra',icon:'✦'}]
 };
-const state={tab:'tops',top:'tee',bottom:'jeans',extra:'glasses',gender:'woman',skinTone:'#d99a72',colors:{tops:'#5a9ed6',bottoms:'#9871d5',extras:'#ff7f9f'},score:0,combo:0,lastTug:0,busy:false,sound:false};
+const state={tab:'tops',top:'tee',bottom:'jeans',extra:'glasses',gender:'woman',skinTone:'#d99a72',hairColor:'#463455',colors:{tops:'#5a9ed6',bottoms:'#9871d5',extras:'#ff7f9f'},score:0,combo:0,lastTug:0,busy:false,sound:false};
 const $=s=>document.querySelector(s), panel=$('#optionsPanel'), avatar=$('#avatar');
 const genders=[{id:'woman',name:'Woman'},{id:'man',name:'Man'},{id:'nonbinary',name:'Nonbinary'}];
 const skinTones=[{name:'Porcelain',hex:'#f5d6c3'},{name:'Light',hex:'#edc1a0'},{name:'Peach',hex:'#dfa47f'},{name:'Tan',hex:'#d99a72'},{name:'Brown',hex:'#a96d4e'},{name:'Deep',hex:'#704333'}];
@@ -13,28 +13,55 @@ const hairstyles={
  man:{back:'M127 86 Q117 28 163 18 Q211 7 232 48 L233 75 Q215 53 198 47 Q173 38 143 59 L137 93Z',front:'M132 75 Q129 36 165 26 Q201 17 223 42 Q208 39 194 51 Q174 65 146 69 L139 91Z'},
  nonbinary:{back:'M127 91 Q113 31 160 19 Q215 3 236 53 Q244 73 233 104 L224 69 Q202 63 187 44 Q170 65 139 71Z',front:'M131 76 Q128 35 164 25 Q197 17 222 40 L228 61 Q216 52 208 51 Q213 68 202 77 Q190 69 184 58 Q169 77 147 74 L139 100Z'}
 };
+function mixColor(hex,target,amount){const value=hex.replace('#','');const rgb=[0,2,4].map(i=>parseInt(value.slice(i,i+2),16));return '#'+rgb.map(channel=>Math.round(channel+(target-channel)*amount).toString(16).padStart(2,'0')).join('');}
+function setGradient(id,color,light=.22,dark=.25){$(`#${id}Highlight`).setAttribute('stop-color',mixColor(color,255,light));$(`#${id}Base`).setAttribute('stop-color',color);$(`#${id}Shade`).setAttribute('stop-color',mixColor(color,0,dark));}
 function drawAppearance(){
+ setGradient('skin',state.skinTone,.2,.24);setGradient('hair',state.hairColor,.35,.32);
  const genderRoot=$('#genderOptions');genderRoot.innerHTML='';
  genders.forEach(g=>{const b=document.createElement('button');b.type='button';b.className='appearance-chip'+(state.gender===g.id?' selected':'');b.textContent=g.name;b.setAttribute('aria-pressed',state.gender===g.id);b.onclick=()=>{state.gender=g.id;render();};genderRoot.appendChild(b);});
  const skinRoot=$('#skinSwatches');skinRoot.innerHTML='';
  skinTones.forEach(t=>{const b=document.createElement('button');b.type='button';b.className='skin-swatch'+(state.skinTone===t.hex?' active':'');b.style.backgroundColor=t.hex;b.title=t.name;b.setAttribute('aria-label',`${t.name} skin tone`);b.setAttribute('aria-pressed',state.skinTone===t.hex);b.onclick=()=>{state.skinTone=t.hex;render();};skinRoot.appendChild(b);});
  $('#selectedGender').textContent=genders.find(g=>g.id===state.gender).name;
  $('#selectedSkinTone').textContent=skinTones.find(t=>t.hex===state.skinTone)?.name||'Custom';
- document.querySelectorAll('.skin-tone').forEach(part=>part.setAttribute('fill',state.skinTone));
  $('#hairBack').setAttribute('d',hairstyles[state.gender].back);$('#hairFront').setAttribute('d',hairstyles[state.gender].front);
  avatar.setAttribute('aria-label',`A smiling cartoon adult with a ${state.gender} character style and ${$('#selectedSkinTone').textContent.toLowerCase()} skin tone, ready to dress up`);
 }
-function drawTop(){const c=state.colors.tops;let shape='';if(state.top==='tee')shape=`<path d="M138 157 L121 165 L104 202 L127 216 L139 197 L136 326 Q180 339 224 326 L221 197 L234 216 L257 202 L239 164 L222 157 L208 172 Q180 187 152 172Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M161 175 Q180 183 199 175" fill="none" stroke="#ffffff88" stroke-width="3"/>`;
+function paintReferenceColors(colors,fileName){
+ const root=$('#referencePalette');root.innerHTML='';colors.forEach((color,index)=>{const b=document.createElement('button');b.type='button';b.className='reference-swatch';b.style.backgroundColor=color;b.dataset.color=color;b.title=`Apply sampled color ${index+1}: ${color}`;b.setAttribute('aria-label',`Apply sampled color ${index+1}, ${color}`);root.appendChild(b);});
+ $('#referenceStatus').textContent=colors.length?`Sampled ${colors.length} colors from “${fileName}”. Picture processed here only.`:'Could not find usable colors in that picture. Try another image.';
+}
+let referenceRequestId=0;
+async function sampleReference(file){
+ const requestId=++referenceRequestId,status=$('#referenceStatus'),root=$('#referencePalette');root.innerHTML='';
+ if(!file)return;
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)){status.textContent='Please choose a PNG, JPEG, or WebP picture.';return;}
+ if(file.size>8*1024*1024){status.textContent='That picture is over 8 MB. Choose a smaller file.';return;}
+ status.textContent='Sampling colors on this device…';
+ let bitmap;
+ try{
+  bitmap=await createImageBitmap(file);const canvas=document.createElement('canvas'),size=64;canvas.width=size;canvas.height=size;
+  const context=canvas.getContext('2d',{willReadFrequently:true});if(!context)throw new Error('Canvas unavailable');
+  context.drawImage(bitmap,0,0,size,size);bitmap.close();bitmap=null;
+  const pixels=context.getImageData(0,0,size,size).data,buckets=new Map();
+  for(let i=0;i<pixels.length;i+=16){if(pixels[i+3]<128)continue;const rgb=[pixels[i],pixels[i+1],pixels[i+2]].map(v=>Math.round(v/32)*32);const key=rgb.map(v=>Math.min(255,v).toString(16).padStart(2,'0')).join('');buckets.set(key,(buckets.get(key)||0)+1);}
+  const ranked=[...buckets].sort((a,b)=>b[1]-a[1]).map(([hex])=>`#${hex}`),colors=[];
+  for(const color of ranked){if(colors.every(other=>colorDistance(color,other)>52))colors.push(color);if(colors.length===5)break;}
+  if(requestId===referenceRequestId)paintReferenceColors(colors,file.name);
+ }catch{if(requestId===referenceRequestId)status.textContent='Could not read that picture. Try a PNG, JPEG, or WebP file.';}
+ finally{bitmap?.close();}
+}
+function colorDistance(a,b){const x=a.slice(1).match(/../g).map(v=>parseInt(v,16)),y=b.slice(1).match(/../g).map(v=>parseInt(v,16));return Math.hypot(x[0]-y[0],x[1]-y[1],x[2]-y[2]);}
+function drawTop(){const c=state.colors.tops;setGradient('topCloth',c,.28,.28);let shape='';if(state.top==='tee')shape=`<path d="M138 157 L121 165 L104 202 L127 216 L139 197 L136 326 Q180 339 224 326 L221 197 L234 216 L257 202 L239 164 L222 157 L208 172 Q180 187 152 172Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M161 175 Q180 183 199 175" fill="none" stroke="#ffffff88" stroke-width="3"/>`;
 if(state.top==='hoodie')shape=`<path d="M137 157 L120 166 L101 205 L126 221 L139 201 L135 326 Q180 339 225 326 L221 201 L235 221 L260 205 L239 166 L222 157 L207 173 Q180 190 153 173Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M161 164 Q180 143 199 164 L194 177 Q180 185 166 177Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M160 292 Q180 284 200 292 L197 307 Q180 312 163 307Z" fill="#ffffff44"/><path d="M176 187v85m9-85v85" stroke="#fff" stroke-width="2"/>`;
 if(state.top==='tank')shape=`<path d="M142 158 Q152 148 163 151 L168 173 Q180 180 192 173 L197 151 Q211 148 220 158 L230 326 Q207 339 180 326 Q153 339 130 326Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M145 163 L155 181 M215 163 L205 181" stroke="#fff" stroke-width="5" stroke-linecap="round"/>`;
 if(state.top==='underwear')shape=`<path d="M137 165 Q158 178 180 170 Q202 178 223 165 L231 211 Q207 227 180 210 Q153 227 129 211Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M143 165 Q142 146 155 146 Q166 146 167 172 M194 172 Q196 146 209 146 Q222 147 218 165" fill="none" stroke="${c}" stroke-width="10" stroke-linecap="round"/><path d="M143 168 Q180 181 217 168" fill="none" stroke="#fff" stroke-width="2"/>`;
-$('#topGarment').innerHTML=shape;}
-function drawBottom(){const c=state.colors.bottoms;let shape='';if(state.bottom==='jeans')shape=`<path d="M137 314 Q180 323 224 314 L219 375 L219 439 L230 459 L212 470 L193 458 L189 374 L177 371 L172 456 L153 469 L132 459 L143 438 L141 374Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M143 337 Q180 345 218 337 M180 336v34 M148 351l18 3m45-3-18 3" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/>`;
+shape=shape.replaceAll(`fill="${c}"`,'fill="url(#topClothGradient)"');$('#topGarment').innerHTML=shape;}
+function drawBottom(){const c=state.colors.bottoms;setGradient('bottomCloth',c,.28,.3);let shape='';if(state.bottom==='jeans')shape=`<path d="M137 314 Q180 323 224 314 L219 375 L219 439 L230 459 L212 470 L193 458 L189 374 L177 371 L172 456 L153 469 L132 459 L143 438 L141 374Z" fill="${c}" stroke="#fff" stroke-width="3" stroke-linejoin="round"/><path d="M143 337 Q180 345 218 337 M180 336v34 M148 351l18 3m45-3-18 3" fill="none" stroke="#fff" stroke-width="2" opacity=".8"/>`;
 if(state.bottom==='shorts')shape=`<path d="M136 312 Q180 324 224 312 L220 372 Q204 381 180 371 Q156 382 140 372Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M180 333v39 M144 340 Q180 350 217 340" fill="none" stroke="#fff" stroke-width="2"/>`;
 if(state.bottom==='skirt')shape=`<path d="M138 314 Q180 324 222 314 L240 395 Q180 411 120 395Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M131 345 Q180 357 229 345 M143 369q37 12 74 0" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>`;
 if(state.bottom==='briefs')shape=`<path d="M137 310 Q180 322 224 310 L223 354 Q206 367 181 348 Q156 367 138 354Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M140 316 Q180 328 221 316 M143 322 L151 352 M218 322 L210 352" fill="none" stroke="#fff" stroke-width="2"/>`;
 if(state.bottom==='joggers')shape=`<path d="M137 312 Q180 322 224 312 L220 377 L224 449 Q208 457 190 450 L181 374 L174 374 L169 450 Q151 457 133 449 L142 377Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M143 337 Q180 345 218 337 M180 341v30 M137 447q15 7 32 0m22 0q17 7 33 0" fill="none" stroke="#fff" stroke-width="3"/>`;
-$('#bottomGarment').innerHTML=shape;}
+shape=shape.replaceAll(`fill="${c}"`,'fill="url(#bottomClothGradient)"');$('#bottomGarment').innerHTML=shape;}
 function drawExtra(){let s='';const c=state.colors.extras;if(state.extra==='glasses')s=`<g fill="none" stroke="${c}" stroke-width="5"><rect x="143" y="82" width="27" height="20" rx="8"/><rect x="190" y="82" width="27" height="20" rx="8"/><path d="M170 89 Q180 84 190 89"/></g><path d="M148 87h16m33 0h15" stroke="#fff" stroke-width="2"/>`;
 if(state.extra==='cap')s=`<path d="M128 66 Q131 29 177 27 Q220 28 231 67 L222 75 Q181 60 136 77Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M129 67 Q164 59 207 72 Q224 77 236 84 Q205 93 178 78 Q151 72 129 76Z" fill="${c}" stroke="#fff" stroke-width="3"/><path d="M181 34v26" stroke="#fff" stroke-width="3"/>`;
 if(state.extra==='bow')s=`<path d="M218 58 Q235 34 251 49 Q257 65 232 69 Q258 76 247 92 Q231 97 218 72 Q207 93 193 84 Q189 67 211 65 Q192 56 203 44 Q214 41 218 58Z" fill="${c}" stroke="#fff" stroke-width="3"/><circle cx="219" cy="68" r="7" fill="#ffcf5a"/>`;
@@ -45,6 +72,8 @@ function render(){panel.innerHTML='';catalog[state.tab].forEach(item=>{const b=d
 function drawSwatches(){const root=$('#swatches');root.innerHTML='';const color=state.colors[state.tab];palette.forEach(p=>{const b=document.createElement('button');b.className='swatch'+(color===p.hex?' active':'');b.style.background=p.hex;b.setAttribute('aria-label',p.name);b.setAttribute('aria-pressed',color===p.hex);b.onclick=()=>{state.colors[state.tab]=p.hex;$('#selectedColorName').textContent=p.name;render();};root.appendChild(b);});const current=palette.find(p=>p.hex===color);$('#selectedColorName').textContent=current?.name||'Custom';}
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>{state.tab=t.dataset.tab;render();}));
 $('#nameInput').addEventListener('input',e=>{const n=e.target.value.trim().slice(0,12)||'Riley';$('#characterName').textContent=n;document.querySelector('.stage-caption').innerHTML=`<span class="caption-dot"></span> ${n} is a grown-up (25) & ready to play`;});
+$('#referenceUpload').addEventListener('change',e=>{const file=e.target.files[0];e.target.value='';sampleReference(file);});
+$('#referencePalette').addEventListener('click',e=>{const button=e.target.closest('[data-color]');if(!button)return;const target=$('#referenceTarget').value;if(target==='hair')state.hairColor=button.dataset.color;else state.colors[target]=button.dataset.color;render();message(`Reference color applied to ${target==='hair'?'hair':`the ${target==='tops'?'top':'bottom'}`}.`);});
 $('#pullRange').addEventListener('input',e=>$('#pullValue').textContent=e.target.value);
 const lines=['Boing! Nailed the look!','Ha! That was a good one!','Fashion AND bounce!','Riley says: one more!','What a silly little hop!','Style points incoming!'];let toastTimer;
 function message(text){const t=$('#toast');t.textContent=text;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),1500);}

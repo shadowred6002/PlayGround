@@ -26,29 +26,33 @@
             <svg id="avatar" viewBox="0 0 360 520" role="img" aria-label="A smiling cartoon adult ready to dress up">
               <defs>
                 <filter id="softShadow" x="-30%" y="-30%" width="160%" height="180%"><feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#563b79" flood-opacity=".15"/></filter>
+                <linearGradient id="skinGradient" x1="0" y1="0" x2="1" y2="1"><stop id="skinHighlight" offset="0" stop-color="#f3c7a6"/><stop id="skinBase" offset=".48" stop-color="#d99a72"/><stop id="skinShade" offset="1" stop-color="#ad7054"/></linearGradient>
+                <linearGradient id="hairGradient" x1="0" y1="0" x2=".8" y2="1"><stop id="hairHighlight" offset="0" stop-color="#725b7c"/><stop id="hairBase" offset=".55" stop-color="#463455"/><stop id="hairShade" offset="1" stop-color="#2e2638"/></linearGradient>
+                <linearGradient id="topClothGradient" x1="0" y1="0" x2=".18" y2="1"><stop id="topClothHighlight" offset="0" stop-color="#8bc2e8"/><stop id="topClothBase" offset=".48" stop-color="#5a9ed6"/><stop id="topClothShade" offset="1" stop-color="#3f78aa"/></linearGradient>
+                <linearGradient id="bottomClothGradient" x1="0" y1="0" x2=".18" y2="1"><stop id="bottomClothHighlight" offset="0" stop-color="#c0a9ef"/><stop id="bottomClothBase" offset=".48" stop-color="#9871d5"/><stop id="bottomClothShade" offset="1" stop-color="#60459b"/></linearGradient>
               </defs>
               <g id="person" filter="url(#softShadow)">
                 <!-- legs and shoes -->
-                <path d="M139 326 C135 366 138 420 133 461 L131 476 Q145 487 171 478 L177 463 177 353 181 326Z" class="skin-tone" fill="#d99a72"/>
-                <path d="M183 326 L185 365 187 457 Q187 472 197 479 Q214 485 235 476 L234 461 Q221 454 218 444 L217 326Z" class="skin-tone" fill="#d99a72"/>
+                <path d="M139 326 C135 366 138 420 133 461 L131 476 Q145 487 171 478 L177 463 177 353 181 326Z" class="skin-tone" fill="url(#skinGradient)"/>
+                <path d="M183 326 L185 365 187 457 Q187 472 197 479 Q214 485 235 476 L234 461 Q221 454 218 444 L217 326Z" class="skin-tone" fill="url(#skinGradient)"/>
                 <g id="bottomGarment"></g>
                 <g id="shoes"><path d="M132 458 Q143 466 177 457 L181 474 Q180 490 157 493 L119 491 Q113 483 123 475Z" fill="#ff704d"/><path d="M188 457 Q207 463 233 456 L243 475 Q247 489 226 493 L190 490 Q181 483 188 457Z" fill="#ff704d"/><path d="M121 484 Q144 489 176 482M191 482Q217 490 240 482" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round"/></g>
                 <!-- arms -->
-                <path d="M125 162 Q105 169 99 199 L79 273 Q73 291 87 298 Q100 302 108 285 L137 224Z" class="skin-tone" fill="#d99a72"/>
-                <path d="M228 162 Q249 169 255 198 L279 266 Q287 284 275 294 Q261 302 251 284 L217 220Z" class="skin-tone" fill="#d99a72"/>
-                <circle cx="86" cy="291" r="13" class="skin-tone" fill="#d99a72"/><circle cx="275" cy="287" r="13" class="skin-tone" fill="#d99a72"/>
+                <path d="M125 162 Q105 169 99 199 L79 273 Q73 291 87 298 Q100 302 108 285 L137 224Z" class="skin-tone" fill="url(#skinGradient)"/>
+                <path d="M228 162 Q249 169 255 198 L279 266 Q287 284 275 294 Q261 302 251 284 L217 220Z" class="skin-tone" fill="url(#skinGradient)"/>
+                <circle cx="86" cy="291" r="13" class="skin-tone" fill="url(#skinGradient)"/><circle cx="275" cy="287" r="13" class="skin-tone" fill="url(#skinGradient)"/>
                 <!-- torso -->
-                <path d="M133 143 Q151 130 180 131 Q210 130 229 144 L240 220 225 335 Q181 351 137 335 L122 219Z" class="skin-tone" fill="#d99a72"/>
+                <path d="M133 143 Q151 130 180 131 Q210 130 229 144 L240 220 225 335 Q181 351 137 335 L122 219Z" class="skin-tone" fill="url(#skinGradient)"/>
                 <!-- base underwear top -->
                 <path id="baseTop" d="M136 167 Q158 179 180 171 Q203 179 225 167 L231 211 Q209 224 181 208 Q151 224 130 211Z" fill="#71c7bc" stroke="#fff" stroke-width="3"/>
                 <path d="M143 166 Q141 147 154 146 Q164 146 166 171 M196 171 Q198 146 209 146 Q222 148 219 169" fill="none" stroke="#71c7bc" stroke-width="9" stroke-linecap="round"/>
                 <g id="topGarment"></g>
                 <!-- neck and head -->
-                <path d="M161 118 L161 145 Q180 157 199 144 L199 118Z" class="skin-tone" fill="#d99a72"/>
-                <ellipse cx="180" cy="84" rx="54" ry="62" class="skin-tone" fill="#e6ad82"/>
-                <path id="hairBack" d="M127 91 Q113 31 160 19 Q215 3 236 53 Q244 73 233 104 L224 69 Q202 63 187 44 Q170 65 139 71Z" fill="#463455"/>
-                <ellipse cx="180" cy="85" rx="49" ry="55" class="skin-tone" fill="#e6ad82"/>
-                <path id="hairFront" d="M133 76 Q132 31 171 25 Q203 20 224 43 Q234 57 230 82 Q209 71 195 52 Q176 72 146 74 L139 100Z" fill="#463455"/>
+                <path d="M161 118 L161 145 Q180 157 199 144 L199 118Z" class="skin-tone" fill="url(#skinGradient)"/>
+                <ellipse cx="180" cy="84" rx="54" ry="62" class="skin-tone" fill="url(#skinGradient)"/>
+                <path id="hairBack" d="M127 91 Q113 31 160 19 Q215 3 236 53 Q244 73 233 104 L224 69 Q202 63 187 44 Q170 65 139 71Z" fill="url(#hairGradient)"/>
+                <ellipse cx="180" cy="85" rx="49" ry="55" class="skin-tone" fill="url(#skinGradient)"/>
+                <path id="hairFront" d="M133 76 Q132 31 171 25 Q203 20 224 43 Q234 57 230 82 Q209 71 195 52 Q176 72 146 74 L139 100Z" fill="url(#hairGradient)"/>
                 <path d="M153 89 Q162 83 169 89 M192 89 Q200 83 208 89" fill="none" stroke="#583d38" stroke-width="4" stroke-linecap="round"/>
                 <ellipse cx="162" cy="96" rx="3" ry="4" fill="#342d40"/><ellipse cx="200" cy="96" rx="3" ry="4" fill="#342d40"/>
                 <path d="M171 111 Q180 120 190 110" fill="none" stroke="#a95356" stroke-width="3" stroke-linecap="round"/>
@@ -82,6 +86,16 @@
             <div class="section-title"><span>SKIN TONE</span><span class="selected-color" id="selectedSkinTone">Tan</span></div>
             <div class="skin-swatches" id="skinSwatches" role="group" aria-label="Choose character skin tone"></div>
           </div>
+        </section>
+        <section class="reference-card" aria-label="Photo-inspired character colors">
+          <div class="section-title"><span>DESIGN FROM A PICTURE</span><span class="selected-color">ON-DEVICE</span></div>
+          <p class="reference-help" id="referenceHelp">Choose a fictional or consenting adult character reference. We sample its colors to style this original illustrated avatar—no face matching or photo upload.</p>
+          <input id="referenceUpload" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="referenceHelp referenceStatus">
+          <label class="upload-button" for="referenceUpload">＋ Choose reference picture</label>
+          <div class="reference-status" id="referenceStatus" aria-live="polite">Your picture stays on this device.</div>
+          <label class="reference-target-label" for="referenceTarget">Apply picked color to</label>
+          <select id="referenceTarget" class="reference-target"><option value="hair">Hair</option><option value="tops">Current top</option><option value="bottoms">Current bottom</option></select>
+          <div id="referencePalette" class="reference-palette" role="group" aria-label="Colors sampled from picture"></div>
         </section>
         <div class="color-section"><div class="section-title"><span>COLOR POP</span><span class="selected-color" id="selectedColorName">Berry</span></div><div class="swatches" id="swatches" role="group" aria-label="Choose garment color"></div></div>
         <div class="name-row"><label for="nameInput">NAME YOUR STYLE STAR</label><input id="nameInput" maxlength="12" value="Riley" autocomplete="off" aria-label="Character name"></div>
